@@ -1,0 +1,241 @@
+package OsmanRakhimov_03;
+
+/**
+ *  This is main class is to create a list of Student and GradeItem by reading data 
+ *  from text file
+ * 
+ * Osman || Ahmed
+ * 
+ * Project #3
+ * MacBook Pro, Laptop, Visual Studio Code
+ * 
+ * "It doesnt matther how slowly you go as long
+ * as you do not stop"
+ */
+
+ import java.io.File;
+
+ import java.io.IOException;
+ import java.io.PrintWriter;
+ import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
+/**
+ *  The main class creates a list of Student and GradeItem, reads from input text file.
+ * 
+ * @author osman
+ * 
+ * 
+ */
+ public class OsmanRakhimov_03
+ {
+     // Declaring fields
+     private static List<Student> listOfStudents; // List of Student Items
+     private static List<GradeItem> listOfGradeItem; // List of GradeItem
+     
+     private static Student[] arrayOfStudents; // Array of Student objects
+     private static GradeItem[] arrayOfGradeItem; // Array of GradeItem objects
+
+     private final static String INPUT_FILENAME = "hw3input01.txt"; // Storing input file
+     private final static String OUTPUT_FILENAME = "hw3output.txt"; // Storing output file
+
+     /**
+      * Main creates new instances of listOfStudents and listOfGradeItem
+      * Calls processInput, generateReport to read from file and ouput
+      * @param args
+      * @throws IOException
+      * @throws InterruptedException
+      */
+
+     public static void main(String[] args) throws IOException, InterruptedException
+     {
+         listOfStudents = new ArrayList<Student>();
+         listOfGradeItem = new ArrayList<GradeItem>();
+
+         processInput();
+         generateReport();
+     } // end main
+
+     //********************************************************************* */
+
+     /**
+      * processInput method scans and input file using split method
+      * turn line into array of string
+      *
+      *
+      * @throws IOException
+      * @throws InterruptedException
+      */
+
+     public static void processInput() throws IOException, InterruptedException
+     {
+         // Printing reading from file indicator
+    	 File file = new File(INPUT_FILENAME);
+         Scanner stdIn = new Scanner(file);
+
+         // determines if it is a Student or GradeItem input.
+         while(stdIn.hasNextLine())
+         {
+             String[] arrayStrings = stdIn.nextLine().split(",");
+
+             if(arrayStrings[0].equals("STUDENT"))
+             {
+                 //calls processStudenData
+                processStudentData(arrayStrings);
+             }// end of if
+
+             else if(arrayStrings[0].equals("GRADE ITEM")){
+
+                // calls processGradeItemData
+                 processGradeItemData(arrayStrings);
+             }
+         } // end of while
+
+         stdIn.close();
+     } // end of process
+
+     //********************************************************************************* */
+
+     /**
+      * processStudentData takes in array of data as String and decides if its "ADD" or "DEL"
+      * @param dt
+      * @throws IllegalArgumentException
+      */
+
+     public static void processStudentData(String[] arrayStrings) throws IllegalArgumentException {
+         
+        // saves data as new Student
+         Student Student = new Student(arrayStrings[2],arrayStrings[3], arrayStrings[4], arrayStrings[5] );
+
+         if(arrayStrings[1].equals ("ADD")) {
+             if(listOfStudents.contains(Student)){
+                 System.out.println("This list contains Student Data!");
+             }
+             else {
+                 listOfStudents.add(Student);
+                 
+                // if email contains "@" prints sucessfully 
+                 if(arrayStrings[5].contains("@")){
+                     System.out.println("Student "+ arrayStrings[2] + "is added to this Student List!");
+                 }
+             }
+
+         }
+         
+         else if(arrayStrings[1].equals("DEL"))
+         {
+             // If list doesnt contain Student.
+             if(!listOfStudents.contains(Student))
+             {
+                 System.out.println("Student" + arrayStrings[2] + "is not in the Student List!");
+             }// end of if
+
+             if(listOfStudents.contains(Student)){
+                 listOfStudents.remove(Student); // removes Student from List.
+                 System.out.println("Student"+arrayStrings[2] + "is removed from Student List!");
+             }// end of if
+         } // end of else if
+
+
+
+     } // end of processStudentData
+
+     //******************************************************************************** */
+
+     /**
+      * processGradeItem takes in array of data as String and decides if its "ADD" or "DEL"
+      * @param dt
+      * @throws IllegalArgumentException
+      */
+
+     public static void processGradeItemData(String [] arrayStrings) throws IllegalArgumentException{
+         // Saves data to new GradeItem
+         GradeItem gradeItem = new GradeItem(arrayStrings[3], Integer.parseInt(arrayStrings[2]), arrayStrings[4], arrayStrings[5],
+        		 arrayStrings[6], Integer.parseInt(arrayStrings[7]), Integer.parseInt(arrayStrings[8].trim()));
+         if(arrayStrings[1].equals("ADD")){ // adds GradeItem object to list
+             if(listOfGradeItem.contains(gradeItem)){
+                 System.out.println("This list already exists in grade item!");
+             }// end of if
+             else {
+                 listOfGradeItem.add(gradeItem);
+                 System.out.println("Grade item" + arrayStrings[2] + "was added to list!");
+             }// end of else
+         
+       }
+       else if (arrayStrings[1].equals("DEL")){
+           if(!listOfGradeItem.contains(gradeItem)){
+               System.out.println("Grade item" + arrayStrings[2] + "is not in the Grade Item!");
+           }// end of if
+
+           if (listOfGradeItem.contains(gradeItem))
+           {
+               listOfGradeItem.remove(gradeItem); // removes GradeItem object from list
+               // If list doesnt contains GradeItem
+               System.out.println("Grade Item" + arrayStrings[2] + "was removed from Grade Item!");
+           }// end of if
+       }
+    }
+
+    //********************************************************************************* */
+
+    /**
+     * generateReport calls toArray in list and prints Student object and GradeItem object and
+     * prints to out file.
+     * @throws IOException
+     */
+
+    public static void generateReport() throws IOException{
+        
+        // writing to output file.
+        PrintWriter stdOut = new PrintWriter(new File(OUTPUT_FILENAME));
+        int CurrentSize = 0;
+
+        // array storing Student and GradeItem.
+        arrayOfStudents = new Student[listOfStudents.getCurrentSize()];
+        arrayOfGradeItem = new GradeItem[listOfGradeItem.getCurrentSize()];
+        
+        // toArray list method in list, sending parameters
+        listOfStudents.toArray(arrayOfStudents);
+        listOfGradeItem.toArray(arrayOfGradeItem);
+
+        System.out.println("Generating report");
+
+        // Printing Student info
+        for(int i = 1; i < (listOfStudents).getCurrentSize(); i++){ 
+
+            stdOut.printf("%s   %s  %s  %s", arrayOfStudents[i].getStudentId(),
+            arrayOfStudents[i].getFirstName(), arrayOfStudents[i].getLastName(), 
+            arrayOfStudents[i].getEmail());
+
+            stdOut.println("Grade Item");
+            
+            
+        }
+
+        // printing gradeItem info
+        for(int j = 0; j < listOfGradeItem.getCurrentSize(); j++){
+
+            if(arrayOfGradeItem[j].getStudentId() != null){
+                stdOut.printf("   %d   %s  %5s", arrayOfGradeItem[j].getGradeId(),
+                arrayOfGradeItem[j].getCourseId(),
+                arrayOfGradeItem[j].getItemType());
+                stdOut.printf("   %s  %d  %d", arrayOfGradeItem[j].getDate(),
+                arrayOfGradeItem[j].getMaximumScore(),
+                arrayOfGradeItem[j].getActualScore());
+
+                maximumScore += arrayOfGradeItem[j].getMaximumScore();
+                actualScore += arrayOfGradeItem[j].getActualScore();
+            }// end of if
+        }// end of for
+
+        stdOut.println("===============================================================");
+
+        // prints maximum and actual total.
+        stdOut.println("Total              "+ maximumScore+ "      " + actualScore/n);
+
+        stdOut.close(); // closes printing writer
+
+    }// end of generateRepot
+
+
+     } // end of OsmanRakhimov_3
